@@ -17,9 +17,7 @@ for(i in 1:10){
   print("first model")
   Rcpp::sourceCpp("sde_functions1.cpp")
   pntrs <- create_pntrs()
-  model1 <- sde_ssm(y, pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, pntrs$obs_density,
-    pntrs$prior, c(0.05, 0.2, 1), x0 = 1, positive = TRUE)
-  o1 <- milstein(1, 4, 1, model1$theta, model1$drift, model1$diffusion, model1$ddiffusion, TRUE, 1)
+  o1 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
 
   # this seems to be crucial, needs to fill up memory, probably triggers gc at some point?
   print("create matrices")
@@ -28,18 +26,15 @@ for(i in 1:10){
   print("second model")
   Rcpp::sourceCpp("sde_functions2.cpp")
   pntrs <- create_pntrs()
-  model2 <- sde_ssm(y, pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, pntrs$obs_density,
-    pntrs$prior, c(0.05, 0.2, 1), x0 = 1, positive = TRUE)
-  o2 <- milstein(1, 4, 1, model2$theta, model2$drift, model2$diffusion, model2$ddiffusion, TRUE, 1)
+  o2 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
 
   print("rebuild first model")
   Rcpp::sourceCpp("sde_functions1.cpp", rebuild = TRUE)
   pntrs <- create_pntrs()
-  model1 <- sde_ssm(y, pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, pntrs$obs_density,
-    pntrs$prior, c(0.05, 0.2, 1), x0 = 1, positive = TRUE)
-  o4 <- milstein(1, 4, 1, model1$theta, model1$drift, model1$diffusion, model1$ddiffusion, TRUE, 1)
+  o3 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
   print("repeat millstein function 100,000 times")
   for(j in 1:100000)
-    o4 <- milstein(1, 4, 1, model1$theta, model1$drift, model1$diffusion, model1$ddiffusion, TRUE, 1)
+    o3 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
 
 }
+
