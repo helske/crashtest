@@ -12,7 +12,7 @@ set.seed(834)
 n <- 50
 y <- simulate.data(n, mu = 0.05, sigma_x = 0.2, sigma_y = 1)
 
-for(i in 1:10){
+for (i in 1:10) {
   print(paste0("iteration ", i))
   print("first model")
   Rcpp::sourceCpp("sde_functions1.cpp")
@@ -21,7 +21,7 @@ for(i in 1:10){
 
   # this seems to be crucial, needs to fill up memory, probably triggers gc at some point?
   print("create matrices")
-  a <- b <- c <- d <- matrix(5000^2,5000,5000)
+  a <- b <- c <- d <- matrix(1000^2, 1000, 1000)
 
   print("second model")
   Rcpp::sourceCpp("sde_functions2.cpp")
@@ -33,7 +33,7 @@ for(i in 1:10){
   pntrs <- create_pntrs()
   o3 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
   print("repeat millstein function 100,000 times")
-  for(j in 1:100000)
+  for (j in 1:100000)
     o3 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
 
 }
