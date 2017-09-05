@@ -28,7 +28,6 @@ double ddiffusion(const double x, const arma::vec& theta) {
 }
 
 // log-density of the prior
-// [[Rcpp::export]]
 double log_prior_pdf(const arma::vec& theta) {
 
   double log_pdf = 0.0;
@@ -42,8 +41,6 @@ double log_prior_pdf(const arma::vec& theta) {
 Rcpp::List create_pntrs() {
   // typedef for a pointer of drift/volatility function
   typedef double (*funcPtr)(const double x, const arma::vec& theta);
-  // // typedef for log_prior_pdf
-  // typedef double (*prior_funcPtr)(const arma::vec& theta);
 
   return Rcpp::List::create(
     Rcpp::Named("drift") = Rcpp::XPtr<funcPtr>(new funcPtr(&drift)),

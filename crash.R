@@ -14,27 +14,15 @@ y <- simulate.data(n, mu = 0.05, sigma_x = 0.2, sigma_y = 1)
 
 for (i in 1:10) {
   print(paste0("iteration ", i))
-  print("first model")
-  Rcpp::sourceCpp("sde_functions1.cpp")
-  pntrs <- create_pntrs()
-  o1 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
-
-  # this seems to be crucial, needs to fill up memory, probably triggers gc at some point?
-  print("create matrices")
-  a <- b <- c <- d <- matrix(1000^2, 1000, 1000)
-
-  print("second model")
-  Rcpp::sourceCpp("sde_functions2.cpp")
-  pntrs <- create_pntrs()
-  o2 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
-
-  print("rebuild first model")
   Rcpp::sourceCpp("sde_functions1.cpp", rebuild = TRUE)
   pntrs <- create_pntrs()
-  o3 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
+  # this seems to be crucial, altough looks to be irrelevant. Probably triggers gc at some point?
+  print("create matrices")
+  a <- matrix(1000^2, 1000, 1000)
+
   print("repeat millstein function 100,000 times")
   for (j in 1:100000)
-    o3 <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
+    out <- milstein(1, 4, 1, c(0.05, 0.2, 1), pntrs$drift, pntrs$diffusion, pntrs$ddiffusion, TRUE, 1)
 
 }
 
